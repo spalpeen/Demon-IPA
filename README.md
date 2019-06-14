@@ -4,6 +4,8 @@
 
 * Demon-IPA 是几个基于 Swoole 的分布式任务调度系统
 
+* 结构扩展性强适用于二次开发
+
 * web 界面管理任务 支持任务日志的查看 时刻了解任务执行的状态
 
 * 去中心化，多个 worker pull 的方式抢占消费任务 避免单台机器 down 机导致任务不能执行
@@ -11,6 +13,9 @@
 * 依赖：Swoole , Redis
 
 ### 架构
+
+
+![HTTP](application/views/pic/jiagou.png)
 
 ### 使用
 
@@ -62,10 +67,7 @@ php server/jobServer start
 
 ### todo list
 
+1.server 多节点
 
-1.架构图
-
-2.server 多节点
-
-3.机器负责情况分析
+2.机器负责情况分析
 
