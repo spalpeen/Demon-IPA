@@ -1,8 +1,9 @@
 <?php
 
 /**
- * 废弃
- * Class Etcd
+ * User: kongming01
+ * Date: 2019/5/27
+ * Time: 15:39
  */
 class Etcd
 {

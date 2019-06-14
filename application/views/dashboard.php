@@ -70,7 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <template slot-scope="scope">
                             <el-button
                                     size="mini"
-                                    @click="handle_edit(scope.row,scope.$index)">编辑
+                                    @click="handle_edit(scope.row)">编辑
                             </el-button>
                             <el-button
                                     size="mini"
@@ -83,23 +83,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </el-main>
         </el-container>
     </el-container>
-
-    <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
-            width="30%"
-    >
-        <span>{{ list[select_index] }}</span>
-        <el-input
-                placeholder="请输入内容"
-                v-model="input"
-                :disabled="true">
-        </el-input>
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
-    </el-dialog>
 </div>
 </body>
 <!-- import Vue before Element -->
@@ -138,11 +121,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 //集群
                 cron_colony: '',
 
-                //弹窗
-                dialogVisible: false,
-
-                //list 索引
-                select_index: -1,
             }
         },
         watch: {
@@ -222,10 +200,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     });
 
             },
-            handle_edit(item,index) {
-                this.dialogVisible = true;
-                this.select_index = index;
-                console.log(this.list[this.select_index])
+            handle_edit(item) {
+                console.log(item)
             }
         },
 

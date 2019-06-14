@@ -1,8 +1,8 @@
 <?php
 
-$config['socket_type'] = 'tcp'; //`tcp` or `unix`
-$config['socket'] = '/var/run/redis.sock'; // in case of `unix` socket type
-$config['host'] = '127.0.0.1';
-$config['password'] = '123456';
-$config['port'] = 6379;
-$config['timeout'] = 10;
+$config['socket_type'] = env('redis.socketType'); //`tcp` or `unix`
+$config['socket'] = env('redis.socket'); // in case of `unix` socket type
+$config['host'] = env('redis.host');
+$config['password'] = env('redis.auth');
+$config['port'] = env('redis.port');
+$config['timeout'] = env('redis.timeout');
