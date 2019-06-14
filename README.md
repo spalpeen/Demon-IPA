@@ -12,6 +12,9 @@
 
 ### 架构
 
+
+![HTTP](application/views/pic/jiagou.png)
+
 ### 使用
 
 1. 安装Swoole , php-redis 扩展
@@ -66,10 +69,7 @@ php server/jobServer start
 
 ### todo list
 
+1.server 多节点
 
-1.架构图
-
-2.server 多节点
-
-3.机器负责情况分析
+2.机器负责情况分析
 
