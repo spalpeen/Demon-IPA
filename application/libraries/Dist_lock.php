@@ -37,6 +37,15 @@ class Dist_lock
 
     public function lock($key, $ttl)
     {
+        $falseRet = [
+            'status' => false,
+            'validity' => -1,
+            'key' => $key,
+            'token' => '',
+        ];
+        if ($ttl <= 0) {
+            return $falseRet;
+        }
         $this->_initRedis();
         $lock_key = $this->lock_key_prefix . $key;
         $token = uniqid();
@@ -52,28 +61,29 @@ class Dist_lock
                 'token' => $token,
             ];
         }
+        return $falseRet;
 
         //漂移
-        $drift = ($ttl * $this->clockDriftFactor) + 2;
-        //有效时间
-        $validityTime = $ttl - (microtime(true) * 1000 - $startTime) - $drift;
-        if ($validityTime > 0) {
-            return [
-                'status' => true,
-                'validity' => $validityTime,
-                'key' => $key,
-                'token' => $token,
-            ];
-        } else {
-            //有效时间过期 释放锁
-            $this->unlock_instance($key, $token);
-            return [
-                'status' => false,
-                'validity' => 0,
-                'key' => '',
-                'token' => '',
-            ];
-        }
+//        $drift = ($ttl * $this->clockDriftFactor) + 2;
+//        //有效时间
+//        $validityTime = $ttl - (microtime(true) * 1000 - $startTime) - $drift;
+//        if ($validityTime > 0) {
+//            return [
+//                'status' => true,
+//                'validity' => $validityTime,
+//                'key' => $key,
+//                'token' => $token,
+//            ];
+//        } else {
+//            //有效时间过期 释放锁
+//            $this->unlock_instance($key, $token);
+//            return [
+//                'status' => false,
+//                'validity' => 0,
+//                'key' => '',
+//                'token' => '',
+//            ];
+//        }
     }
 
     public function unlock(array $lock)
