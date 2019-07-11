@@ -50,11 +50,7 @@ server {
 3.修改Mysql,Redis 配置
 
 ```
-修改：
-
-application/config/database.php
-
-application/config/redis.php
+将根目录中的env.example.php重命名为env.php，并且修改其中的配置
 ```
 
 4.启动server

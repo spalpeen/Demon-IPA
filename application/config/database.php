@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['development'] = array(
 	'dsn'	=> '',
-	'hostname' => '10.252.61.190',
-	'username' => 'root',
-	'password' => '123456',
-	'database' => 'db_hbg_php_dts',
+	'hostname' => env('mysql.host'),
+	'username' => env('mysql.username'),
+	'password' => env('mysql.password'),
+	'database' => env('mysql.database'),
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

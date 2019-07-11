@@ -847,3 +847,23 @@ if ( ! function_exists('function_usable'))
 		return FALSE;
 	}
 }
+
+if (!function_exists('env'))
+{
+    function env($configName)
+    {
+        $envFile = FCPATH . 'env.php';
+
+        if (!file_exists($envFile)) {
+            return '';
+        }
+        $config = include_once($envFile);
+        $path = explode('.', $configName);
+
+        if (count($path) !== 2) {
+            return '';
+        }
+
+        return $config[$path[0]][$path[1]];
+    }
+}

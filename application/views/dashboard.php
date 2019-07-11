@@ -70,7 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <template slot-scope="scope">
                             <el-button
                                     size="mini"
-                                    @click="handle_edit(scope.row,scope.$index)">编辑
+                                    @click="handle_edit(scope.row)">编辑
                             </el-button>
                             <el-button
                                     size="mini"
@@ -179,6 +179,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </el-dialog>
     <el-button type="primary" style="position: fixed;bottom: 80px;right: 40px;" icon="el-icon-edit" circle
                @click="handle_add"></el-button>
+
 </div>
 </body>
 <!-- import Vue before Element -->
@@ -417,7 +418,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     .finally(function () {
 
                     });
-            }
         },
 
         components: {}
