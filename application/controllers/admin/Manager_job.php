@@ -108,6 +108,11 @@ class Manager_job extends Dts_Controller
                 'rules' => 'required',
             ],
             [
+                'field' => 'cron_name',
+                'label' => 'Rule',
+                'rules' => 'required',
+            ],
+            [
                 'field' => 'cron_manager',
                 'label' => 'Manager',
                 'rules' => 'required',
@@ -126,10 +131,11 @@ class Manager_job extends Dts_Controller
             return false;
         }
         $colony = $this->input->post('cron_colony');
+        $name = $this->input->post('cron_name');
         $rule = trim($this->input->post('cron_rule'));
         $manager = $this->input->post('cron_manager');
         $execution = $this->input->post('cron_execution');
-        $add_resp = $this->crontab_model->add_job($colony, $rule, $manager, $execution);
+        $add_resp = $this->crontab_model->add_job($colony, $rule, $manager, $execution,$name);
         if ($add_resp > 0) {
             $this->to_api_message(0, 'Success', ['data' => ['job_id' => $add_resp]]);
             return true;
@@ -203,6 +209,16 @@ class Manager_job extends Dts_Controller
                 'label' => 'Execution',
                 'rules' => 'required',
             ],
+            [
+                'field' => 'status',
+                'label' => 'Status',
+                'rules' => 'required',
+            ],
+            [
+                'field' => 'cron_name',
+                'label' => 'Cronname',
+                'rules' => 'required',
+            ],
         ];
 
         $this->form_validation->set_rules($post_data);
@@ -216,7 +232,9 @@ class Manager_job extends Dts_Controller
         $rule = trim($this->input->post('cron_rule'));
         $manager = $this->input->post('cron_manager');
         $execution = $this->input->post('cron_execution');
-        $edit_resp = $this->crontab_model->edit_job($id, $colony, $rule, $manager, $execution);
+        $name = $this->input->post('name');
+        $status = $this->input->post('status');
+        $edit_resp = $this->crontab_model->edit_job($id, $colony, $rule, $manager, $execution,$status,$name);
         if ($edit_resp > 0) {
             $this->to_api_message(0, 'Success', ['data' => ['job_id' => $edit_resp]]);
             return true;

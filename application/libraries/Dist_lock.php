@@ -45,7 +45,12 @@ class Dist_lock
 
         $get_lock = $this->redis_instances->set($lock_key, $token, ['NX', 'PX' => $ttl]);
         if ($get_lock) {
-            return true;
+            return [
+                'status' => true,
+                'validity' => $ttl - (microtime(true) * 1000 - $startTime),
+                'key' => $key,
+                'token' => $token,
+            ];
         }
 
         //漂移

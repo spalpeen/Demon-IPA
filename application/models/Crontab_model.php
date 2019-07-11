@@ -42,10 +42,10 @@ class Crontab_model extends CI_Model
         return $query->result_array();
     }
 
-    public function add_job($colony, $rule, $manager, $execution)
+    public function add_job($colony, $rule, $manager, $execution,$name)
     {
         $insert_value = [
-            'cron_name' => $colony,
+            'cron_name' => $name,
             'cron_rule' => $rule,
             'cron_execution' => $execution,
             'cron_manager' => $manager,
@@ -64,15 +64,15 @@ class Crontab_model extends CI_Model
         return $this->db->affected_rows();
     }
 
-    public function edit_job($id, $colony, $rule, $manager, $execution)
+    public function edit_job($id, $colony, $rule, $manager, $execution,$status,$name)
     {
         $edit_value = [
-            'cron_name' => $colony,
+            'cron_name' => $name,
             'cron_rule' => $rule,
             'cron_execution' => $execution,
             'cron_manager' => $manager,
             'cron_colony' => $colony,
-            'status' => 1,
+            'status' => $status,
             'updatetime' => time()
         ];
         $this->db->where('id', $id);

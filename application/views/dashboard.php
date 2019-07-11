@@ -63,7 +63,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             align="right">
                         <template slot="header" slot-scope="scope">
                             <el-input
-                                    v-model="cron_colony"
+                                    v-model="search_cron_colony"
                                     size="mini"
                                     placeholder="输入集群搜索"/>
                         </template>
@@ -84,22 +84,101 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </el-container>
     </el-container>
 
+    <!--    edit-dialog-->
     <el-dialog
+            class="my-dialog"
             title="提示"
-            :visible.sync="dialogVisible"
-            width="30%"
+            :visible.sync="dialog_edit_visible"
+            width="50%"
     >
-        <span>{{ list[select_index] }}</span>
+
         <el-input
-                placeholder="请输入内容"
-                v-model="input"
+                placeholder="创建时间"
+                v-model="createtime"
                 :disabled="true">
         </el-input>
+        <el-input
+                placeholder="管理者"
+                v-model="cron_manager"
+                :disabled="false">
+        </el-input>
+        <el-input
+                placeholder="集群"
+                v-model="cron_colony"
+                :disabled="true">
+        </el-input>
+        <el-input
+                placeholder="任务名称"
+                v-model="cron_name"
+                :disabled="true">
+        </el-input>
+        <el-input
+                placeholder="任务规则"
+                v-model="cron_rule"
+                :disabled="false">
+        </el-input>
+        <el-select v-model="status">
+            <el-option
+                    v-for="item in status_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+        </el-select>
+
+        <el-input type="textarea" v-model="cron_execution" :rows="5" placeholder="执行命令">
+        </el-input>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
+            <el-button @click="dialog_edit_visible = false">取 消</el-button>
+            <el-button type="primary" @click="handle_edit_post">确 定</el-button>
+        </span>
     </el-dialog>
+
+    <!--    add_dialog-->
+    <el-dialog
+            class="my-dialog-add"
+            title="提示"
+            :visible.sync="dialog_add_visible"
+            width="50%"
+    >
+        <el-input
+                placeholder="管理者"
+                v-model="add_data.cron_manager"
+                :disabled="false">
+        </el-input>
+        <el-input
+                placeholder="集群"
+                v-model="add_data.cron_colony"
+                :disabled="false">
+        </el-input>
+        <el-input
+                placeholder="任务名称"
+                v-model="add_data.cron_name"
+                :disabled="false">
+        </el-input>
+        <el-input
+                placeholder="任务规则"
+                v-model="add_data.cron_rule"
+                :disabled="false">
+        </el-input>
+        <el-select v-model="add_data.status">
+            <el-option
+                    v-for="item in status_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+        </el-select>
+
+        <el-input type="textarea" v-model="add_data.cron_execution" :rows="5" placeholder="执行命令">
+        </el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialog_add_visible = false">取 消</el-button>
+            <el-button type="primary" @click="handle_add_post">确 定</el-button>
+        </span>
+    </el-dialog>
+    <el-button type="primary" style="position: fixed;bottom: 80px;right: 40px;" icon="el-icon-edit" circle
+               @click="handle_add"></el-button>
 </div>
 </body>
 <!-- import Vue before Element -->
@@ -119,6 +198,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         color: #333;
     }
 
+    .my-dialog .el-input {
+        margin-bottom: 10px;
+    }
+
+    .my-dialog-add .el-input {
+        margin-bottom: 10px;
+    }
+
 </style>
 
 <script>
@@ -130,23 +217,65 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 list: [],
 
                 // 每页多少条
-                pageSize: 20,
+                page_size: 20,
 
                 // 第几页
-                pageNum: 1,
+                page_num: 1,
+
+                //id
+                id: '',
 
                 //集群
                 cron_colony: '',
 
-                //弹窗
-                dialogVisible: false,
+                //创建时间
+                createtime: '',
+
+                //管理者
+                cron_manager: '',
+
+                //任务名称
+                cron_name: '',
+
+                //任务执行语句
+                cron_execution: '',
+
+                //任务规则
+                cron_rule: '',
+
+                //状态
+                status: '1',
+
+                search_cron_colony: '',
+
+                //修改弹窗
+                dialog_edit_visible: false,
+
+                //添加弹窗
+                dialog_add_visible: false,
 
                 //list 索引
                 select_index: -1,
+
+                status_options: [{
+                    value: '1',
+                    label: '无效'
+                }, {
+                    value: '2',
+                    label: '有效'
+                }],
+                add_data: {
+                    cron_colony: '',
+                    cron_manager: '',
+                    cron_name: '',
+                    cron_execution: '',
+                    cron_rule: '',
+                    status: '1',
+                },
             }
         },
         watch: {
-            'cron_colony': function (val, old) {
+            'search_cron_colony': function (val, old) {
                 if (val) {
                     this.get_list();
                 }
@@ -158,16 +287,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         mounted() {
         },
         methods: {
+            handle_click(index) {
+                console.log(index)
+                switch (index) {
+                    case '1-2':
+                        location.href = '/admin/manager_job';
+                        break;
+                }
+            },
             /**
              * 获取数据：列表信息
              */
             get_list() {
                 let _this = this;
-                axios.get('/admin/manager_job', {
-                    cron_colony: this.cron_colony,
-                    page_num: this.page_num,
-                    page_size: this.page_size,
-                })
+                axios.get('/admin/manager_job?cronColony='+ _this.search_cron_colony + '&pageNum=' + _this.page_num + '&pageSize=' + _this.page_size)
                     .then(function (response) {
                         // handle success
                         _this.list = response.data.response
@@ -182,31 +315,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     });
             },
 
-            get_detail(item) {
-                let form = new FormData();
-                form.append('id', item.id);
-                let _this = this;
-                axios.post('/admin/manager_job/detail', form)
-                    .then(function (response) {
-                        // handle success
-                        console.log(response)
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .finally(function () {
-                        // always executed
-                    });
-            },
             handle_delete(item, index) {
                 let form = new FormData();
                 form.append('id', item.id);
+                form.append('status', 3);
                 let _this = this;
                 axios.post('/admin/manager_job/delete', form)
-                    // handle success
+                // handle success
                     .then(function (response) {
-                        _this.list.splice(index,1)
+                        _this.list.splice(index, 1);
                         _this.$message({
                             message: '删除成功',
                             center: true
@@ -222,16 +339,88 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     });
 
             },
-            handle_edit(item,index) {
-                this.dialogVisible = true;
-                this.select_index = index;
-                console.log(this.list[this.select_index])
+            handle_edit(item, index) {
+                this.dialog_edit_visible = true;
+                this.id = this.list[index].id;
+                this.createtime = this.list[index].createtime;
+                this.cron_manager = this.list[index].cron_manager;
+                this.cron_colony = this.list[index].cron_colony;
+                this.cron_name = this.list[index].cron_name;
+                this.cron_rule = this.list[index].cron_rule;
+                this.status = this.list[index].status;
+                this.cron_execution = this.list[index].cron_execution;
+            },
+            handle_add() {
+                this.dialog_add_visible = true;
+            },
+
+            handle_add_post() {
+                let _this = this;
+                let form = new FormData();
+                form.append('status', _this.add_data.status);
+                form.append('cron_manager', _this.add_data.cron_manager);
+                form.append('cron_colony', _this.add_data.cron_colony);
+                form.append('cron_name', _this.add_data.cron_name);
+                form.append('cron_rule', _this.add_data.cron_rule);
+                form.append('cron_execution', _this.add_data.cron_execution);
+                axios.post('/admin/manager_job/add', form)
+                // handle success
+                    .then(function (response) {
+                        _this.dialog_add_visible = false;
+                        _this.$message({
+                            message: response.data.message,
+                            center: true
+                        });
+
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        _this.$message({
+                            message: '添加失败',
+                            center: true
+                        });
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            handle_edit_post() {
+                let _this = this;
+                let form = new FormData();
+                form.append('id', _this.id);
+                form.append('status', _this.status);
+                form.append('cron_manager', _this.cron_manager);
+                form.append('cron_colony', _this.cron_colony);
+                form.append('cron_name', _this.cron_name);
+                form.append('cron_rule', _this.cron_rule);
+                form.append('cron_execution', _this.cron_execution);
+                axios.post('/admin/manager_job/edit', form)
+                // handle success
+                    .then(function (response) {
+                        _this.dialog_edit_visible = false;
+                        console.log(response.data.code)
+                        _this.$message({
+                            message: response.data.message,
+                            center: true
+                        });
+
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        _this.$message({
+                            message: '修改失败',
+                            center: true
+                        });
+                        console.log(error);
+                    })
+                    .finally(function () {
+
+                    });
             }
         },
 
-        components: {
-
-        }
+        components: {}
     })
 </script>
 
