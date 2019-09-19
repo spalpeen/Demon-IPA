@@ -14,8 +14,22 @@
 
 ### 架构
 
+#### 版本1.0
 
 ![HTTP](application/views/pic/jiagou.png)
+
+#### 版本2.0
+
+由多节点调度器读取任务表，读取后抢占锁决定谁来决定任务的执行
+
+初始任务为1级任务，调度器不执行，将任务变为二级任务分发给任务执行集群，分发前进行存活检测
+
+执行结果写进log表,做可视化图标
+
+当所有执行机器down机，拥有锁的调度器独自执行任务
+
+![dts](application/views/pic/dts.png)
+
 
 ### 使用
 
@@ -67,7 +81,5 @@ php server/jobServer start
 
 ### todo list
 
-1.server 多节点
-
-2.机器负责情况分析
+1.机器负责情况
 
