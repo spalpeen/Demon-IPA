@@ -5,7 +5,7 @@ CREATE TABLE `t_crontab` (
   `id` int(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `cron_name` varchar(512) NOT NULL DEFAULT '0' COMMENT '任务名称',
   `cron_rule` varchar(256) NOT NULL DEFAULT '* * * * *' COMMENT '任务规则',
-  `cron_execution` varchar(512) NOT NULL DEFAULT 'echo hello world!!!' COMMENT '任务执行语句',
+  `cron_execution` TEXT COMMENT '任务执行语句',
   `cron_manager` varchar(128) NOT NULL DEFAULT 'kongming01' COMMENT '任务负责人',
   `cron_colony` varchar(128) NOT NULL DEFAULT 'hbg_php_dts' COMMENT '任务所在集群',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态 1：无效，2：有效，3：删除',
